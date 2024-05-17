@@ -1,4 +1,4 @@
-### zrmiller@illinois.edu | zachary.miller@yale.edu ###
+### zachary.miller@yale.edu ###
 
 ### Generate plots shown in the paper
 
@@ -6,8 +6,10 @@ library(deSolve)
 library(Ternary)
 library(geometry)
 library(tidyverse)
+library(ggpubr)
 library(reshape2)
 library(scales)
+library(viridis)
 
 source("./simulation_functions.R")
 
@@ -217,7 +219,10 @@ AddToTernary(points, n_init, pch = 4) # annotate initial conditions
 
 ##### Fig 3 : BDI simulations #####
 
-BDI_dat <- read_csv("../simulation_results/BDI_nu_0.001_S_5000_sigma_0.csv")
+nu <- 0.001
+S <- 5000
+
+BDI_dat <- read_csv(paste0("../simulation_results/BDI_nu_", nu, "_S_", S, "_reps_50_sigma_0.csv"))
 BDI_dat <- BDI_dat %>% filter(timepoint > 50) # use only late times to ensure convergence to steady state
 
 # theoretical formula for expected number of species in neutral model
@@ -262,11 +267,11 @@ p_3a <- BDI_dat %>%
 
 p_3b <- BDI_dat %>%
   filter(p > 1) %>% # exclude neutral model for now and plot separately
-  filter(abuns > 1) %>% # exclude singletons
+  # filter(abuns > 1) %>% # optional exclude singletons
   group_by(p, timepoint, rep) %>% count() %>% # get richness for each p, timepoint, and replicate
   ggplot() + 
   aes(x = as.factor(p), y = n, color = as.factor(p)) + 
-  geom_hline(yintercept = -S * mutation_rate * log(mutation_rate) - ewens_formula(1, S, mutation_rate), # plot theoretical richness (adjusted to remove singletons)
+  geom_hline(yintercept = -S * nu * log(nu), # - ewens_formula(1, S, nu), # plot theoretical richness (optional adjusted to remove singletons)
              linetype = "dashed") + 
   geom_boxplot(outlier.alpha = 0.25) +
   scale_color_viridis_d() + 

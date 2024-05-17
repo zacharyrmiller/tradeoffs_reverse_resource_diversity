@@ -1,4 +1,4 @@
-### zrmiller@illinois.edu | zachary.miller@yale.edu ###
+### zachary.miller@yale.edu ###
 
 ### Execute large-scale simulations
 
@@ -98,7 +98,7 @@ for(i in 1:n_reps){
       
       # generate parameters
       A_exact <- generate_tradeoff_matrix(p, m) # sample matrix of resource utilization rates
-      A <- A_exact + matrix(rnorm(p * m_init, 0, sigma), nrow = m_init, ncol = p) # add noise to entries
+      A <- A_exact + matrix(rnorm(p * m, 0, sigma), nrow = m, ncol = p) # add noise to entries
       
       if(s_type == 1){
         s <- rep(1/p, p) # equal supply of all resources (neglect scaling by S, as this does not change dynamics)
